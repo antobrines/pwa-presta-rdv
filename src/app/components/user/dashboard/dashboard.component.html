@@ -1,0 +1,11 @@
+<div *ngIf="!loading">
+  <p>Nom : {{userData.firstName}}</p>
+  <p>Prénom : {{userData.lastName}}</p>
+  <p>Adresse : {{userData.address}}</p>
+  <p>Ville : {{userData.city}}</p>
+  <p>Code postal : {{userData.postal_code}}</p>
+</div>
+<div *ngIf="loading">
+  <app-loading></app-loading>
+</div>
+
