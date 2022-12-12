@@ -1,6 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 import { GoogleMap, MapInfoWindow, MapMarker } from '@angular/google-maps';
+import { AuthService } from 'src/app/services/auth.service';
 import { GeofireService } from 'src/app/services/geofire.service';
+import { MeetService } from 'src/app/services/meet.service';
 
 @Component({
   selector: 'app-maps',
@@ -24,8 +26,14 @@ export class MapsComponent implements OnInit {
   @ViewChild(MapInfoWindow)
   info!: MapInfoWindow;
   @ViewChild(GoogleMap) map!: GoogleMap;
+  public dateSelected: EventEmitter<Date> = new EventEmitter();
+  private dateCurrent = new Date();
+  userConnected: any;
 
-  constructor(private geofireService: GeofireService) {
+  constructor(
+    private authService: AuthService,
+    private meetService: MeetService
+  ) {
     navigator.geolocation.getCurrentPosition((position) => {
       this.centerInitial = {
         lat: position.coords.latitude,
@@ -42,46 +50,51 @@ export class MapsComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
-
-  boundsChange() {
-    const bounds = this.map.getBounds()?.toJSON();
-    const east = bounds?.east || 0;
-    const north = bounds?.north || 0;
-    const radius = this.geofireService.getDistanceBetweenKm(
-      north,
-      east,
-      this.centerCurrent.lat,
-      this.centerCurrent.lng
-    );
-    const snapShots = this.geofireService.getPrestatariesInRadius(
-      this.centerCurrent,
-      radius * 1000
-    );
-    snapShots.then((snapShots) => {
-      snapShots.forEach((snapShot: any) => {
-        snapShot.forEach((doc: any) => {
-          const data = doc.data();
-          const lat = data.lat;
-          const lng = data.lng;
-          const marker = {
-            position: {
-              lat: lat,
-              lng: lng,
-            },
-            title: data.firstName,
-            uid: data.uid
-          };
-          if (!this.markers.find((m: any) => m.title === marker.title)) {
-            this.markers.push(marker);
-          }
+  ngOnInit(): void {
+    this.authService.GetAuth().then((user) => {
+      if (user) {
+        this.userConnected = user;
+        this.dateSelected.subscribe((date) => {
+          this.dateCurrent = date;
+          this.getMeets(date);
         });
-      });
+      }
     });
   }
 
   openInfo(marker: MapMarker, content: any) {
     this.infoContent = content.title;
     this.info.open(marker);
+  }
+
+  getMeets(date: Date) {
+    this.meetService
+      .getMeetsUserDate(this.userConnected.uid, date.getTime())
+      .subscribe((meets) => {
+        this.markers = [];
+        meets.forEach((meet: any) => {
+          this.markers.push({
+            position: {
+              lat: meet.lat,
+              lng: meet.lng,
+            },
+            title: `${meet.firstNameUser} ${meet.lastNameUser}`,
+            options: { animation: google.maps.Animation.DROP },
+            meet: meet,
+          });
+        });
+      });
+  }
+
+  changeDay(input: number) {
+    if (input == -1) {
+      this.dateCurrent.setDate(this.dateCurrent.getDate() - 1);
+      this.dateCurrent.setHours(0, 0, 0, 0);
+      this.dateSelected.emit(this.dateCurrent);
+    } else {
+      this.dateCurrent.setDate(this.dateCurrent.getDate() + 1);
+      this.dateCurrent.setHours(0, 0, 0, 0);
+      this.dateSelected.emit(this.dateCurrent);
+    }
   }
 }

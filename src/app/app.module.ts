@@ -10,6 +10,7 @@ import { SignUpComponent } from './components/user/sign-up/sign-up.component';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
 
 // Firebase
 import { AngularFireModule } from '@angular/fire/compat';
@@ -29,6 +30,8 @@ import { LoadingComponent } from './components/loading/loading.component';
 import { ConfirmComponent } from './components/user/confirm/confirm.component';
 import { HotToastModule } from '@ngneat/hot-toast';
 import { MapsComponent } from './components/maps/maps.component';
+import { DisponibilitesComponent } from './components/presta/disponibilites/disponibilites.component';
+import { MeetComponent } from './components/meet/meet.component';
 
 @NgModule({
   declarations: [
@@ -42,9 +45,12 @@ import { MapsComponent } from './components/maps/maps.component';
     LoadingComponent,
     ConfirmComponent,
     MapsComponent,
+    DisponibilitesComponent,
+    MeetComponent,
   ],
   imports: [
     BrowserModule,
+    FlexLayoutModule,
     GoogleMapsModule,
     MaterialModule,
     AngularFireModule.initializeApp(environment.firebase),
@@ -62,11 +68,9 @@ import { MapsComponent } from './components/maps/maps.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    HotToastModule.forRoot(
-      {
-        position: 'bottom-center',
-      }
-    ),
+    HotToastModule.forRoot({
+      position: 'bottom-center',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],

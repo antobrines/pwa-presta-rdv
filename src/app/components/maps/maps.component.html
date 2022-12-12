@@ -1,5 +1,5 @@
-<!-- map in center of the page -->
-<google-map [center]="centerInitial" (boundsChanged)="boundsChange()" width="100%" [options]="options">
+<button mat-button (click)="changeDay(-1)">< </button> <button mat-button (click)="changeDay(+1)"> > </button> <span></span>
+<google-map [center]="centerInitial"  width="100%" [options]="options">
   <map-marker
     #markerT="mapMarker"
     *ngFor="let marker of markers"
@@ -10,7 +10,14 @@
     (mapClick)="openInfo(markerT, marker)"
   >
   </map-marker>
-
   <map-info-window>{{ infoContent }}</map-info-window>
 </google-map>
 
+<!-- card for markers -->
+<mat-card *ngFor="let marker of markers">
+  <mat-card-title>{{ marker.title }}</mat-card-title>
+  <mat-card-content>
+    <p>{{ marker.meet.hour }}</p>
+    <p>{{ marker.meet.description }}</p>
+  </mat-card-content>
+</mat-card>

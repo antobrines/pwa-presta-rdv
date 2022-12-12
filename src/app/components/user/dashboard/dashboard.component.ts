@@ -11,14 +11,14 @@ export class DashboardComponent implements OnInit {
   loading = true;
   constructor(private authService: AuthService) {}
 
-  ngOnInit(): void {
-    // get uid from local storage
-    const userString = localStorage.getItem('user');
-    if (userString) {
-      const user = JSON.parse(userString);
-      this.authService.GetUserData(user.uid).subscribe((userData) => {
+  async ngOnInit() {
+    const userConnected = await this.authService.GetAuth();
+    const uid = userConnected.uid || '';
+
+    if (uid !== '') {
+      this.authService.GetUserData(uid).subscribe((userData) => {
         this.loading = false;
-        this.userData = userData;
+        this.userData = userData.data();
       });
     }
   }

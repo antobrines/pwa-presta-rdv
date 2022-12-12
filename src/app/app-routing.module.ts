@@ -1,3 +1,4 @@
+import { MeetComponent } from './components/meet/meet.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { SignInComponent } from './components/user/sign-in/sign-in.component';
@@ -36,6 +37,12 @@ const routes: Routes = [
   {
     path: 'maps',
     component: MapsComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin },
+  },
+  {
+    path: 'meets',
+    component: MeetComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },

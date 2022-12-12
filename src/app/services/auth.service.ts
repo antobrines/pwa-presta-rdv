@@ -41,9 +41,16 @@ export class AuthService {
       .signInWithEmailAndPassword(email, password)
       .then((result) => {
         if (result.user) {
-          this.GetUserData(result.user.uid).subscribe((user) => {
-            if (user) {
+          this.GetUserData(result.user.uid).subscribe((user: any) => {
+            const userData = user.data() as User;
+            if (userData.isPrestatary) {
               this.router.navigate(['dashboard']);
+            } else {
+              console.log(userData);
+              this.toast.error("Vous n'êtes pas un prestataire", {
+                id: 'notPrestatary',
+              });
+              this.SignOut(false);
             }
           });
         }
@@ -54,7 +61,7 @@ export class AuthService {
   }
 
   SignUp(user: User, password: string) {
-    this.toast.loading('Votre compte est en train d\'être crée', {
+    this.toast.loading("Votre compte est en train d'être crée", {
       id: 'userCreated',
       autoClose: false,
     });
@@ -67,7 +74,6 @@ export class AuthService {
           this.SignOut(false);
           this.toast.close('userCreated');
         });
-
       })
       .catch((error) => {
         this.toast.close('userCreated');
@@ -77,9 +83,11 @@ export class AuthService {
 
   SendVerificationMail() {
     return this.afAuth.currentUser
-      .then((u: any) => u.sendEmailVerification({
-        url: `${window.location.origin}/confirm-email?confirm=true`,
-      }))
+      .then((u: any) =>
+        u.sendEmailVerification({
+          url: `${window.location.origin}/confirm-email?confirm=true`,
+        })
+      )
       .then(() => {
         // TODO EMAIL PAGE
       });
@@ -120,17 +128,18 @@ export class AuthService {
   }
 
   GetUserData(uid: string) {
-    return this.afs.doc(`users/${uid}`).valueChanges();
+    return this.afs.doc(`users/${uid}`).get();
   }
 
   SignOut(redirect = true) {
     return this.afAuth.signOut().then(() => {
       localStorage.clear();
       this.isLoggedIn.emit(false);
-      if(redirect)
-        this.router.navigate(['']);
+      if (redirect) this.router.navigate(['']);
     });
   }
 
-  GetAuth() {}
+  async GetAuth(): Promise<any> {
+    return this.afAuth.currentUser;
+  }
 }
