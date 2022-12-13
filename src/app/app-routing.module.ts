@@ -1,3 +1,4 @@
+import { CalendarComponent } from './components/calendar/calendar.component';
 import { MeetComponent } from './components/meet/meet.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -43,6 +44,12 @@ const routes: Routes = [
   {
     path: 'meets',
     component: MeetComponent,
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorizedToLogin },
+  },
+  {
+    path: 'calendar',
+    component: CalendarComponent,
     canActivate: [AngularFireAuthGuard],
     data: { authGuardPipe: redirectUnauthorizedToLogin },
   },

@@ -32,6 +32,21 @@ import { HotToastModule } from '@ngneat/hot-toast';
 import { MapsComponent } from './components/maps/maps.component';
 import { DisponibilitesComponent } from './components/presta/disponibilites/disponibilites.component';
 import { MeetComponent } from './components/meet/meet.component';
+import { CalendarComponent } from './components/calendar/calendar.component';
+
+import { ScheduleModule } from '@syncfusion/ej2-angular-schedule';
+import {
+  DayService,
+  WeekService,
+  WorkWeekService,
+  MonthService,
+  AgendaService,
+} from '@syncfusion/ej2-angular-schedule';
+import {
+  DateTimePickerModule,
+  TimePickerModule,
+} from '@syncfusion/ej2-angular-calendars';
+import { CalendarModule } from '@syncfusion/ej2-angular-calendars';
 
 @NgModule({
   declarations: [
@@ -47,9 +62,14 @@ import { MeetComponent } from './components/meet/meet.component';
     MapsComponent,
     DisponibilitesComponent,
     MeetComponent,
+    CalendarComponent,
   ],
   imports: [
     BrowserModule,
+    CalendarModule,
+    ScheduleModule,
+    DateTimePickerModule,
+    TimePickerModule,
     FlexLayoutModule,
     GoogleMapsModule,
     MaterialModule,
@@ -72,7 +92,13 @@ import { MeetComponent } from './components/meet/meet.component';
       position: 'bottom-center',
     }),
   ],
-  providers: [],
+  providers: [
+    DayService,
+    WeekService,
+    WorkWeekService,
+    MonthService,
+    AgendaService,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

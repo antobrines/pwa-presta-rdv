@@ -14,8 +14,10 @@ export  const  environment  =  {
     storageBucket: '${process.env['FIREBASE_STORAGE_BUCKET']}',
     messagingSenderId: '${process.env['FIREBASE_MESSAGING_SENDER_ID']}',
     appId: '${process.env['FIREBASE_APP_ID']}',
-    measurementId: '${process.env['FIREBASE_MEASUREMENT_ID']}'
-  }
+    measurementId: '${process.env['FIREBASE_MEASUREMENT_ID']}',
+    vapidKey: '${process.env['FIREBASE_VAPID_KEY']}',
+  },
+  syncfusionKey: '${process.env['SYNCFUSION_KEY']}',
 };
 `;
 writeFile(targetPath, envConfigFile, function (err: any) {

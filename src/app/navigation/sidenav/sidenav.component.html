@@ -5,6 +5,12 @@
   <a mat-list-item routerLink="/Dashboard" (click)="onSidenavClose()" *ngIf="isLoggedIn">
       <mat-icon>dashboard</mat-icon> <span class="nav-caption"> Dashboard</span>   
   </a>
+  <a mat-list-item routerLink="/maps" (click)="onSidenavClose()" *ngIf="isLoggedIn">
+    <mat-icon>maps</mat-icon> <span class="nav-caption"> Maps</span>   
+  </a>
+  <a mat-list-item routerLink="/calendar" (click)="onSidenavClose()" *ngIf="isLoggedIn">
+    <mat-icon>calendar_today</mat-icon> <span class="nav-caption"> Calendrier</span>   
+  </a>
   <a mat-list-item routerLink="#" (click)="onSidenavClose()" *ngIf="!isLoggedIn">
       <mat-icon>login</mat-icon><span class="nav-caption"> Connexion</span>
   </a>

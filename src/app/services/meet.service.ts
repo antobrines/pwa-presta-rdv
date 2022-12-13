@@ -12,7 +12,6 @@ export class MeetService {
   ) {}
 
   createMeet(meet: any) {
-    // add user connected to meet
     const userConnected = this.authService.GetAuth();
     userConnected.then((user) => {
       if (user) {
@@ -44,6 +43,17 @@ export class MeetService {
   getMyMeets(uid: string) {
     return this.afs
       .collection('meets', (ref) => ref.where('userUid', '==', uid))
+      .valueChanges();
+  }
+
+  getMeetsBewteenDates(prestaUid: string, dateStart: any, dateEnd: any) {
+    return this.afs
+      .collection('meets', (ref) =>
+        ref
+          .where('prestaUid', '==', prestaUid)
+          .where('date', '>=', dateStart)
+          .where('date', '<=', dateEnd)
+      )
       .valueChanges();
   }
 }
