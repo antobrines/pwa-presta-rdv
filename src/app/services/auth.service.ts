@@ -1,3 +1,4 @@
+import { MessagingService } from './messaging.service';
 import { User } from './../models/user';
 import { EventEmitter, Injectable, NgZone, Output } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
@@ -8,6 +9,8 @@ import {
 import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { GeofireService } from './geofire.service';
+import { DeviceDetectorService } from 'ngx-device-detector';
+import { AngularFireMessaging } from '@angular/fire/compat/messaging';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +24,9 @@ export class AuthService {
     public router: Router,
     public ngZone: NgZone,
     private toast: HotToastService,
-    private geofireService: GeofireService
+    private geofireService: GeofireService,
+    private deviceService: DeviceDetectorService,
+    private messagingService: MessagingService
   ) {
     this.afAuth.onAuthStateChanged((user) => {
       if (user) {
@@ -44,9 +49,12 @@ export class AuthService {
           this.GetUserData(result.user.uid).subscribe((user: any) => {
             const userData = user.data() as User;
             if (userData.isPrestatary) {
+              this.UpdateUser(
+                result.user?.uid,
+                this.messagingService.getDevice()
+              );
               this.router.navigate(['dashboard']);
             } else {
-              console.log(userData);
               this.toast.error("Vous n'êtes pas un prestataire", {
                 id: 'notPrestatary',
               });
@@ -109,7 +117,7 @@ export class AuthService {
       `users/${firebaseUser.uid}`
     );
     const hash = this.geofireService.getHash(user.lat, user.lng);
-    const userData: User = {
+    const userData = {
       uid: firebaseUser.uid,
       email: user.email,
       firstName: user.firstName,
@@ -121,12 +129,38 @@ export class AuthService {
       lng: user.lng,
       isPrestatary: user.isPrestatary,
       geohash: hash,
+      desktopToken: '',
+      mobileToken: '',
+      tabletToken: '',
     };
     return userRef.set(userData, {
       merge: true,
     });
   }
 
+  async UpdateUser(userUid: any, deviceObj: any) {
+    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
+      `users/${userUid}`
+    );
+    const token = await this.messagingService.getTokenMessage();
+    const device = deviceObj.device;
+    if (device === 'desktop') {
+      return userRef.update({
+        desktopToken: token,
+      });
+    }
+    if (device === 'mobile') {
+      return userRef.update({
+        mobileToken: token,
+      });
+    }
+    if (device === 'tablet') {
+      return userRef.update({
+        tabletToken: token,
+      });
+    }
+    return null;
+  }
   GetUserData(uid: string) {
     return this.afs.doc(`users/${uid}`).get();
   }
