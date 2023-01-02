@@ -10,7 +10,7 @@ import { Router } from '@angular/router';
 import { HotToastService } from '@ngneat/hot-toast';
 import { GeofireService } from './geofire.service';
 import { DeviceDetectorService } from 'ngx-device-detector';
-import { AngularFireMessaging } from '@angular/fire/compat/messaging';
+import * as CryptoJS from 'crypto-js';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +49,7 @@ export class AuthService {
           this.GetUserData(result.user.uid).subscribe((user: any) => {
             const userData = user.data() as User;
             if (userData.isPrestatary) {
-              this.UpdateUser(
+              this.UpdateTokenMessage(
                 result.user?.uid,
                 this.messagingService.getDevice()
               );
@@ -129,38 +129,29 @@ export class AuthService {
       lng: user.lng,
       isPrestatary: user.isPrestatary,
       geohash: hash,
-      desktopToken: '',
-      mobileToken: '',
-      tabletToken: '',
     };
     return userRef.set(userData, {
       merge: true,
     });
   }
 
-  async UpdateUser(userUid: any, deviceObj: any) {
-    const userRef: AngularFirestoreDocument<any> = this.afs.doc(
-      `users/${userUid}`
-    );
+  async UpdateTokenMessage(userUid: any, deviceObj: any) {
     const token = await this.messagingService.getTokenMessage();
-    const device = deviceObj.device;
-    if (device === 'desktop') {
-      return userRef.update({
-        desktopToken: token,
-      });
-    }
-    if (device === 'mobile') {
-      return userRef.update({
-        mobileToken: token,
-      });
-    }
-    if (device === 'tablet') {
-      return userRef.update({
-        tabletToken: token,
-      });
-    }
-    return null;
+    const diviceId = deviceObj.userAgent;
+    // hash it
+    const hash = CryptoJS.SHA256(diviceId).toString();
+    const tokenRef: AngularFirestoreDocument<any> = this.afs.doc(
+      `token-messages/${hash}`
+    );
+    const tokenData = {
+      token: token,
+      uid: userUid,
+    };
+    return tokenRef.set(tokenData, {
+      merge: true,
+    });
   }
+
   GetUserData(uid: string) {
     return this.afs.doc(`users/${uid}`).get();
   }

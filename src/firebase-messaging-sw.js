@@ -11,3 +11,11 @@ firebase.initializeApp({
  measurementId: "config data from general tab"
 });
 const messaging = firebase.messaging();
+
+self.addEventListener('message', event => {
+  if (event.data.action === 'cacheUrl') {
+    caches.open('pwa-install-url').then(cache => {
+      cache.put(new Request('/install-url'), new Response(event.data.url));
+    });
+  }
+});

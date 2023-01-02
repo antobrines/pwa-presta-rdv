@@ -6,7 +6,7 @@ require('dotenv').config();
 //  environment.ts  file  structure
 const envConfigFile = `
 export  const  environment  =  {
-  production:  false,
+  production:  true,
   firebase: {
     apiKey: '${process.env['FIREBASE_API_KEY']}',
     authDomain: '${process.env['FIREBASE_AUTH_DOMAIN']}',

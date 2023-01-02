@@ -21,21 +21,7 @@ export class MessagingService {
     }
     return {
       device,
-      deviceInfo: this.deviceService.getDeviceInfo(),
-    };
-  }
-
-  sendNotificationToUser() {
-    const device = this.getDevice();
-    const message = {
-      notification: {
-        title: 'New Message',
-        body: 'You have a new message from your friend',
-      },
-    };
-    const options = {
-      priority: 'high',
-      timeToLive: 60 * 60 * 24,
+      userAgent: this.deviceService.getDeviceInfo().userAgent,
     };
   }
 
