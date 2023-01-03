@@ -52,17 +52,9 @@ import { CalendarModule } from '@syncfusion/ej2-angular-calendars';
   declarations: [
     AppComponent,
     SignInComponent,
-    SignUpComponent,
-    DashboardComponent,
     LayoutComponent,
     HeaderComponent,
     SidenavComponent,
-    LoadingComponent,
-    ConfirmComponent,
-    MapsComponent,
-    DisponibilitesComponent,
-    MeetComponent,
-    CalendarComponent,
   ],
   imports: [
     BrowserModule,

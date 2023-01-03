@@ -24,38 +24,8 @@ const routes: Routes = [
     data: { authGuardPipe: redirectLoggedInToItems },
   },
   {
-    path: 'register',
-    component: SignUpComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectLoggedInToItems },
-  },
-  {
-    path: 'dashboard',
-    component: DashboardComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
-  },
-  {
-    path: 'maps',
-    component: MapsComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
-  },
-  {
-    path: 'meets',
-    component: MeetComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
-  },
-  {
-    path: 'calendar',
-    component: CalendarComponent,
-    canActivate: [AngularFireAuthGuard],
-    data: { authGuardPipe: redirectUnauthorizedToLogin },
-  },
-  {
-    path: 'confirm-email',
-    component: ConfirmComponent,
+    path: '',
+    loadChildren: () => import('./test/test.module').then((m) => m.TestModule),
   },
   { path: '**', redirectTo: '' },
 ];
